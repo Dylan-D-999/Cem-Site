@@ -17,4 +17,6 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CEM_SITE_SDA2 }}
           channelId: live
-          projectId: cem-site-sda2
+          pro
+env:
+      FIREBASE_CLI_EXPERIMENTS: webframeworksjectId: cem-site-sda2
