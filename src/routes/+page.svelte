@@ -6,3 +6,6 @@
 <p>
   Test Page start with npn run dev
 </p>
+<p>
+git push -u origin (branch name)
+</p>
