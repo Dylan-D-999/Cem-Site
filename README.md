@@ -1,6 +1,6 @@
-# sv
+# The CEM Site Repository
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A Svelte based task managment appliaction 
 
 ## Creating a project
 
