@@ -1,2 +1,2 @@
 export const prerender = true;
-export const ssr = false;  // Disable server-side rendering
+export const ssr = true;  // Disable server-side rendering
