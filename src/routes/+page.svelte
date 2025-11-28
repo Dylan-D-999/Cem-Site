@@ -14,7 +14,7 @@
 
 <Row>
   <Col>
-    <h1>Welcome To CEM</h1>
+    <h1>Welcome To The CEM Website</h1>
   </Col>
 </Row>
 
