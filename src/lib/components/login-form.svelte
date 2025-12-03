@@ -5,6 +5,9 @@
   import * as Field from "$lib/components/ui/field/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
   import type { HTMLAttributes } from "svelte/elements";
+  import { auth } from "$lib/firebase";
+  import { signInWithEmailAndPassword } from "firebase/auth";
+  import { goto } from "$app/navigation";
 
   let {
     class: className,
@@ -18,33 +21,22 @@
     onToggle?: () => void;
   } = $props();
 
-  import { auth } from "$lib/firebase";
-  import { createUserWithEmailAndPassword } from "firebase/auth";
-  import { goto } from "$app/navigation";
-
   let email = $state("");
   let password = $state("");
-  let confirmPassword = $state("");
   let error = $state("");
   let loading = $state(false);
 
-  async function handleSignup(e: Event) {
+  async function handleLogin(e: Event) {
     e.preventDefault();
     error = "";
-
-    if (password !== confirmPassword) {
-      error = "Passwords do not match";
-      return;
-    }
-
     loading = true;
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User created successfully");
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log("Logged in successfully");
       goto("/dashboard");
     } catch (err: any) {
-      console.error("Signup error:", err);
+      console.error("Login error:", err);
       error = err.message;
     } finally {
       loading = false;
@@ -55,12 +47,12 @@
 <div class={cn("flex flex-col gap-6", className)} {...restProps}>
   <Card.Root class="overflow-hidden p-0">
     <Card.Content class="grid p-0 md:grid-cols-2">
-      <form class="p-6 md:p-8" onsubmit={handleSignup}>
+      <form class="p-6 md:p-8" onsubmit={handleLogin}>
         <Field.Group>
           <div class="flex flex-col items-center gap-2 text-center">
-            <h1 class="text-2xl font-bold">Create your account</h1>
+            <h1 class="text-2xl font-bold">Welcome back</h1>
             <p class="text-muted-foreground text-balance text-sm">
-              Enter your email below to create your account
+              Login to your account
             </p>
           </div>
           <Field.Field>
@@ -72,47 +64,35 @@
               required
               bind:value={email}
             />
-            <Field.Description>
-              We'll use this to contact you. We will not share your email with
-              anyone else.
-            </Field.Description>
           </Field.Field>
           <Field.Field>
-            <Field.Field class="grid grid-cols-2 gap-4">
-              <Field.Field>
-                <Field.Label for="password">Password</Field.Label>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  bind:value={password}
-                />
-              </Field.Field>
-              <Field.Field>
-                <Field.Label for="confirm-password"
-                  >Confirm Password</Field.Label
-                >
-                <Input
-                  id="confirm-password"
-                  type="password"
-                  required
-                  bind:value={confirmPassword}
-                />
-              </Field.Field>
-            </Field.Field>
-            <Field.Description
-              >Must be at least 8 characters long.</Field.Description
-            >
+            <div class="flex items-center justify-between">
+              <Field.Label for="password">Password</Field.Label>
+              <a
+                href="/forgot-password"
+                class="text-muted-foreground hover:text-primary ml-auto inline-block text-sm underline-offset-4 hover:underline"
+              >
+                Forgot your password?
+              </a>
+            </div>
+            <Input
+              id="password"
+              type="password"
+              required
+              bind:value={password}
+            />
           </Field.Field>
+
+          {#if error}
+            <p class="text-destructive text-sm">{error}</p>
+          {/if}
+
           <Field.Field>
-            {#if error}
-              <p class="text-destructive text-sm">{error}</p>
-            {/if}
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" class="w-full" disabled={loading}>
               {#if loading}
-                Creating Account...
+                Logging in...
               {:else}
-                Create Account
+                Login
               {/if}
             </Button>
           </Field.Field>
@@ -129,7 +109,7 @@
                   fill="currentColor"
                 />
               </svg>
-              <span class="sr-only">Sign up with Apple</span>
+              <span class="sr-only">Sign in with Apple</span>
             </Button>
             <Button variant="outline" type="button" onclick={onGoogleLogin}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -138,7 +118,7 @@
                   fill="currentColor"
                 />
               </svg>
-              <span class="sr-only">Sign up with Google</span>
+              <span class="sr-only">Sign in with Google</span>
             </Button>
             <Button variant="outline" type="button" onclick={onMetaLogin}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -147,14 +127,14 @@
                   fill="currentColor"
                 />
               </svg>
-              <span class="sr-only">Sign up with Meta</span>
+              <span class="sr-only">Sign in with Meta</span>
             </Button>
           </Field.Field>
           <Field.Description class="text-center">
-            Already have an account? <button
+            Don't have an account? <button
               type="button"
               class="underline"
-              onclick={onToggle}>Sign in</button
+              onclick={onToggle}>Sign up</button
             >
           </Field.Description>
         </Field.Group>
