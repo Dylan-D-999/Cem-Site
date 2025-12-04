@@ -1,6 +1,6 @@
 # The CEM Site Repository
 
-A Svelte based task managment appliaction 
+A Svelte based task managment application
 
 Download Visual Studio Code from Here - https://code.visualstudio.com/ Or from The Windows Store
 
@@ -36,3 +36,4 @@ I don't know everyone's level of experience using git or web development / using
 making some random changes here and there just to get comfortable with these tools in regards to git you could also make your own repository and start using that to get some experience with it you could start using it on your other assignments the event driven one and the data structures one as a practice
 on your own personal accounts and so on.
 
+Any questions please ask
