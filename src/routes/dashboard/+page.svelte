@@ -50,6 +50,15 @@
                         <div class="flex flex-col space-y-1">
                             <span
                                 class="text-sm font-medium text-muted-foreground"
+                                >Username</span
+                            >
+                            <span class="text-lg font-semibold"
+                                >{user.displayName || "No username set"}</span
+                            >
+                        </div>
+                        <div class="flex flex-col space-y-1">
+                            <span
+                                class="text-sm font-medium text-muted-foreground"
                                 >Email</span
                             >
                             <span class="text-lg font-semibold"
