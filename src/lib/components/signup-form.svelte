@@ -19,10 +19,11 @@
   } = $props();
 
   import { auth } from "$lib/firebase";
-  import { createUserWithEmailAndPassword } from "firebase/auth";
+  import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
   import { goto } from "$app/navigation";
 
   let email = $state("");
+  let username = $state("");
   let password = $state("");
   let confirmPassword = $state("");
   let error = $state("");
@@ -40,7 +41,14 @@
     loading = true;
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      await updateProfile(userCredential.user, {
+        displayName: username,
+      });
       console.log("User created successfully");
       goto("/dashboard");
     } catch (err: any) {
@@ -63,6 +71,16 @@
               Enter your email below to create your account
             </p>
           </div>
+          <Field.Field>
+            <Field.Label for="username">Username</Field.Label>
+            <Input
+              id="username"
+              type="text"
+              placeholder="Username"
+              required
+              bind:value={username}
+            />
+          </Field.Field>
           <Field.Field>
             <Field.Label for="email">Email</Field.Label>
             <Input
