@@ -1,4 +1,5 @@
 <script lang="ts">
+  //TypeScript Script area
   import { cn } from "$lib/utils.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import * as Card from "$lib/components/ui/card/index.js";
@@ -21,16 +22,19 @@
     onToggle?: () => void;
   } = $props();
 
+  //Variables
   let email = $state("");
   let password = $state("");
   let error = $state("");
   let loading = $state(false);
 
+  //Function for logging in with email and password using firebase auth
   async function handleLogin(e: Event) {
     e.preventDefault();
     error = "";
     loading = true;
 
+    //Try catch block for logging in with email and password
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("Logged in successfully");
@@ -43,6 +47,8 @@
     }
   }
 </script>
+
+<!-- HTML Markup area for defining page layout and structure -->
 
 <div class={cn("flex flex-col gap-6", className)} {...restProps}>
   <Card.Root class="overflow-hidden p-0">

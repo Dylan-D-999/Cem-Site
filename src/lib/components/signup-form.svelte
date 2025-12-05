@@ -22,6 +22,7 @@
   import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
   import { goto } from "$app/navigation";
 
+  //Variables
   let email = $state("");
   let username = $state("");
   let password = $state("");
@@ -29,26 +30,34 @@
   let error = $state("");
   let loading = $state(false);
 
+  //Function for handling  using firebase auth
   async function handleSignup(e: Event) {
     e.preventDefault();
     error = "";
 
+    //Check if passwords match
     if (password !== confirmPassword) {
       error = "Passwords do not match";
       return;
     }
 
+    //Set loading state to true
     loading = true;
 
     try {
+      //Create user with email and password
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password,
       );
+
+      //Update user profile with username
       await updateProfile(userCredential.user, {
         displayName: username,
       });
+
+      //Print success message to console and redirect to dashboard
       console.log("User created successfully");
       goto("/dashboard");
     } catch (err: any) {
@@ -60,6 +69,7 @@
   }
 </script>
 
+<!-- HTML Markup area for defining page layout and structure -->
 <div class={cn("flex flex-col gap-6", className)} {...restProps}>
   <Card.Root class="overflow-hidden p-0">
     <Card.Content class="grid p-0 md:grid-cols-2">

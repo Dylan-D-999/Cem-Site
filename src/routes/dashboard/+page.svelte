@@ -21,7 +21,9 @@
         return () => unsubscribe();
     });
 
+    //Function for handling logout
     async function handleLogout() {
+        //Wait for firebase signout function to complete
         try {
             await signOut(auth);
             goto("/login");
@@ -31,6 +33,7 @@
     }
 </script>
 
+<!-- HTML Markup area for defining page layout and structure -->
 <div
     class="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10"
 >
