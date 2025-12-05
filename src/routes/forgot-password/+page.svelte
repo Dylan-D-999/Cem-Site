@@ -3,6 +3,8 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import * as Field from "$lib/components/ui/field/index.js";
     import { Input } from "$lib/components/ui/input/index.js";
+
+    //Page for handling password reset yet to be implemented will need to get back to this
 </script>
 
 <div
