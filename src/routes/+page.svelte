@@ -14,11 +14,19 @@
 
 <Row>
   <Col>
-    <h1>Welcome To The CEM Website</h1>
+    <h1>C.E.M</h1>
+    <h2>Project Management Solution</h2>
   </Col>
 </Row>
 
 <ButtonGroup.Root>
-  <Button onclick={goToSignInPage}>Go To Login Page</Button>
-  <Button onclick={goToSignInPage}>Test Button</Button>
+  <Button onclick={goToSignInPage}>Login</Button>
+  <Button onclick={goToSignInPage}>Sign up</Button>
 </ButtonGroup.Root>
+
+
+<Row>
+  <Col>
+ 
+  </Col>
+</Row>
