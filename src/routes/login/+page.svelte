@@ -4,6 +4,9 @@
   import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
   import { auth } from "$lib/firebase";
   import { goto } from "$app/navigation";
+  import {onMount} from 'svelte';
+  import { page } from '$app/stores';
+
 
   async function loginWithGoogle() {
     //Google Login Logic
@@ -22,7 +25,13 @@
     console.log("Logging in with Meta...");
   }
 
-  let isLogin = $state(true);
+  onMount(() => {
+    // svelte-ignore reactive_declaration_invalid_placement
+        $: if ($page?.url?.searchParams?.get('mode') === 'signup') {
+    isLogin = false;
+  }
+  })
+  let isLogin: boolean = true;
 
   function toggleAuthMode() {
     isLogin = !isLogin;
