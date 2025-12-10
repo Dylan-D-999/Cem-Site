@@ -2,6 +2,8 @@
   import { Container } from "@sveltestrap/sveltestrap";
   import firebase from "firebase/app";
   import "firebase/auth";
+  
+
     import { onMount } from "svelte";
   onMount(() => {
     const firebaseConfig = {
@@ -18,6 +20,7 @@
 
   }
 </script>
+
 
 <Container>
   <slot />
