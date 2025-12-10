@@ -24,9 +24,3 @@
   <Button onclick={goToSignInPage}>Sign up</Button>
 </ButtonGroup.Root>
 
-
-<Row>
-  <Col>
- 
-  </Col>
-</Row>
