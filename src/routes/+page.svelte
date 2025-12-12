@@ -5,7 +5,6 @@
   import { Button } from "$lib/components/ui/button/index.js";
   import { goto } from "$app/navigation";
     import SignupForm from "$lib/components/signup-form.svelte";
-
   //Function to go to sign in page defined in /src/routes/login
   function goToSignInPage() {
     console.log("Changing to login page");
@@ -15,7 +14,7 @@
 </script>
 
 <svelte:head>
-    <title>C.E.M</title> 
+    <title>C.E.M - Project Management Solutions</title> 
 </svelte:head>
 
 <style>
@@ -42,8 +41,11 @@ h2 {
   <Button onclick={goToSignInPage}>Login</Button>
   <Button href="/login?mode=signup">Sign up</Button>
 </ButtonGroup.Root>
+<div class="images">
+<img src="/collaborating.png" alt="Collaborating Image" />
+<img src="/project.png" alt="Team members collaborating..." />
 
-
+</div>
 <Row>
   <Col>
  

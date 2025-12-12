@@ -1,5 +1,7 @@
 import adapter from '@sveltejs/adapter-static';
-
+import { enhancedImages } from '@sveltejs/enhanced-img';
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
@@ -13,4 +15,9 @@ const config = {
   }
 };
 
-export default config;
+export default defineConfig({
+	plugins: [
+		enhancedImages(), // must come before the SvelteKit plugin
+    sveltekit()
+	]
+});

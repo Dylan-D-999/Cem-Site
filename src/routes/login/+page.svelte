@@ -7,6 +7,24 @@
   import {onMount} from 'svelte';
   import { page } from '$app/stores';
 
+  export let data;
+
+  // read the mode from the URL
+  const mode = data.url.searchParams.get("mode") ?? "login";
+
+  function goToSignInPage() {
+    goto("/login?mode=login");
+  }
+
+  function goToSignUpPage() {
+    goto("/login?mode=signup");
+  }
+
+  {#if mode === "signup"}
+  <SignupForm />
+{:else}
+  <LoginForm />
+{/if}
 
   async function loginWithGoogle() {
     //Google Login Logic
