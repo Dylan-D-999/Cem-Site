@@ -18,13 +18,6 @@
         type Team,
         type Invitation,
     } from "$lib/teams";
-    import {
-        addTask,
-        subscribeToTeamTasks,
-        toggleTaskCompletion,
-        deleteTask,
-        type Task,
-    } from "$lib/tasks";
 
     let user: User | null = $state(null);
     let loading = $state(true);
@@ -34,7 +27,6 @@
     let invitations: Invitation[] = $state([]); // Received invitations
     let sentInvitations: Invitation[] = $state([]); // Sent invitations for selected team
     let selectedTeam: Team | null = $state(null);
-    let tasks: Task[] = $state([]); // Team tasks
 
     // Form State
     let newTeamName = $state("");
@@ -42,15 +34,10 @@
     let isCreatingTeam = $state(false);
     let isInviting = $state(false);
 
-    // Task State
-    let newTaskContent = $state("");
-    let isAddingTask = $state(false);
-
     onMount(() => {
         let unsubscribeTeams: () => void;
         let unsubscribeInvites: () => void;
         let unsubscribeSentInvites: () => void;
-        let unsubscribeTasks: () => void;
 
         const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             user = currentUser;
@@ -59,9 +46,7 @@
             // Clean up previous subscriptions if user changes or logs out
             if (unsubscribeTeams) unsubscribeTeams();
             if (unsubscribeInvites) unsubscribeInvites();
-
             if (unsubscribeSentInvites) unsubscribeSentInvites();
-            if (unsubscribeTasks) unsubscribeTasks();
 
             if (!currentUser) {
                 goto("/login");
@@ -92,10 +77,9 @@
             }
         });
 
+        // Effect to subscribe to sent invitations when selectedTeam changes
         $effect(() => {
             if (unsubscribeSentInvites) unsubscribeSentInvites();
-            if (unsubscribeTasks) unsubscribeTasks();
-
             if (selectedTeam) {
                 unsubscribeSentInvites = subscribeToTeamInvitations(
                     selectedTeam.id,
@@ -103,15 +87,8 @@
                         sentInvitations = invites;
                     },
                 );
-                unsubscribeTasks = subscribeToTeamTasks(
-                    selectedTeam.id,
-                    (updatedTasks) => {
-                        tasks = updatedTasks;
-                    },
-                );
             } else {
                 sentInvitations = [];
-                tasks = [];
             }
         });
 
@@ -119,9 +96,7 @@
             unsubscribeAuth();
             if (unsubscribeTeams) unsubscribeTeams();
             if (unsubscribeInvites) unsubscribeInvites();
-
             if (unsubscribeSentInvites) unsubscribeSentInvites();
-            if (unsubscribeTasks) unsubscribeTasks();
         };
     });
 
@@ -181,36 +156,6 @@
             // Data updates automatically via subscription
         } catch (error) {
             console.error("Error rejecting invite:", error);
-        }
-    }
-
-    async function handleAddTask() {
-        if (!selectedTeam || !user || !newTaskContent.trim()) return;
-        isAddingTask = true;
-        try {
-            await addTask(selectedTeam.id, newTaskContent, user.uid);
-            newTaskContent = "";
-        } catch (error) {
-            console.error("Error adding task:", error);
-        } finally {
-            isAddingTask = false;
-        }
-    }
-
-    async function handleToggleTask(task: Task) {
-        try {
-            await toggleTaskCompletion(task.id, task.isCompleted);
-        } catch (error) {
-            console.error("Error toggling task:", error);
-        }
-    }
-
-    async function handleDeleteTask(task: Task) {
-        if (!confirm("Are you sure you want to delete this task?")) return;
-        try {
-            await deleteTask(task.id);
-        } catch (error) {
-            console.error("Error deleting task:", error);
         }
     }
 
@@ -387,94 +332,6 @@
                                 >
                                     {isInviting ? "Sending..." : "Invite"}
                                 </Button>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2 pt-4 border-t">
-                            <h3 class="font-semibold">Team Tasks</h3>
-                            <div class="flex gap-2">
-                                <Input
-                                    bind:value={newTaskContent}
-                                    placeholder="Add a new task..."
-                                    onkeydown={(e) =>
-                                        e.key === "Enter" && handleAddTask()}
-                                />
-                                <Button
-                                    onclick={handleAddTask}
-                                    disabled={isAddingTask}
-                                >
-                                    {isAddingTask ? "Adding..." : "Add"}
-                                </Button>
-                            </div>
-
-                            <div class="space-y-2 mt-4">
-                                {#if tasks.length === 0}
-                                    <p class="text-sm text-muted-foreground">
-                                        No tasks yet.
-                                    </p>
-                                {:else}
-                                    {#each tasks as task}
-                                        <div
-                                            class="flex items-center justify-between p-3 border rounded-lg {task.isCompleted
-                                                ? 'bg-muted/50'
-                                                : ''}"
-                                        >
-                                            <div
-                                                class="flex items-center gap-3"
-                                            >
-                                                <input
-                                                    type="checkbox"
-                                                    checked={task.isCompleted}
-                                                    onchange={() =>
-                                                        handleToggleTask(task)}
-                                                    class="h-4 w-4"
-                                                />
-                                                <span
-                                                    class={task.isCompleted
-                                                        ? "line-through text-muted-foreground"
-                                                        : ""}
-                                                >
-                                                    {task.content}
-                                                </span>
-                                            </div>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                class="h-8 w-8 text-destructive"
-                                                onclick={() =>
-                                                    handleDeleteTask(task)}
-                                            >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    class="lucide lucide-trash-2"
-                                                    ><path d="M3 6h18" /><path
-                                                        d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"
-                                                    /><path
-                                                        d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
-                                                    /><line
-                                                        x1="10"
-                                                        x2="10"
-                                                        y1="11"
-                                                        y2="17"
-                                                    /><line
-                                                        x1="14"
-                                                        x2="14"
-                                                        y1="11"
-                                                        y2="17"
-                                                    /></svg
-                                                >
-                                            </Button>
-                                        </div>
-                                    {/each}
-                                {/if}
                             </div>
                         </div>
 

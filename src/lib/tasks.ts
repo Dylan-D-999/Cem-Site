@@ -20,15 +20,20 @@ export interface Task {
     content: string;
     isCompleted: boolean;
     createdBy: string;
+    assignedTo?: {
+        uid: string;
+        email: string;
+    } | null;
     createdAt: Timestamp;
 }
 //func to add tasks
-export async function addTask(teamId: string, content: string, userId: string) {
+export async function addTask(teamId: string, content: string, userId: string, assignedTo: { uid: string; email: string } | null = null) {
     const taskData = {
         teamId,
         content,
         isCompleted: false,
         createdBy: userId,
+        assignedTo,
         createdAt: serverTimestamp()
     };
 
