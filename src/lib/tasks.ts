@@ -24,16 +24,18 @@ export interface Task {
         uid: string;
         email: string;
     } | null;
+    deadline?: string | null;
     createdAt: Timestamp;
 }
 //func to add tasks
-export async function addTask(teamId: string, content: string, userId: string, assignedTo: { uid: string; email: string } | null = null) {
+export async function addTask(teamId: string, content: string, userId: string, assignedTo: { uid: string; email: string } | null = null, deadline: string | null = null) {
     const taskData = {
         teamId,
         content,
         isCompleted: false,
         createdBy: userId,
         assignedTo,
+        deadline,
         createdAt: serverTimestamp()
     };
 
