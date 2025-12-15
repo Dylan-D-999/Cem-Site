@@ -25,6 +25,7 @@
         deleteTask,
         type Task,
     } from "$lib/tasks";
+    import Chat from "$lib/components/Chat.svelte";
 
     let user: User | null = $state(null);
     let loading = $state(true);
@@ -567,6 +568,12 @@
                                         </div>
                                     {/each}
                                 </div>
+                            </div>
+                        {/if}
+
+                        {#if user}
+                            <div class="pt-4 border-t">
+                                <Chat teamId={selectedTeam.id} {user} />
                             </div>
                         {/if}
                     </Card.Content>
