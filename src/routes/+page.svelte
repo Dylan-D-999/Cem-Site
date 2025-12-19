@@ -15,26 +15,8 @@
 </script>
 
 <svelte:head>
-    <title>C.E.M</title> 
+      <title>C.E.M</title> 
 </svelte:head>
-
-
-
-<Row>
-  <Col>
-    <h1>C.E.M</h1>
-    <h2>Project Management Solution</h2>
-  </Col>
-</Row>
-    
-
-<div class="button-container"> 
-  <Button onclick={goToSignInPage}>Login</Button>
-  <Button href="/login?mode=signup">Sign up</Button>
-
-</div>
-
-
 
 <style>
 
@@ -63,3 +45,26 @@ p {
 
 
 </style>
+
+<Row>
+  <Col>
+    <h1>C.E.M</h1>
+    <h2>Project Management Solution</h2>
+  </Col>
+</Row>
+    
+
+
+<div class="button-container"> 
+  <Button onclick={goToSignInPage}>Login</Button>
+  <Button href="/login?mode=signup">Sign up</Button>
+  </div>
+
+
+<Row>
+  <Col>
+ 
+  </Col>
+</Row>
+
+
