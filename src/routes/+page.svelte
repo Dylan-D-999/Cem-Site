@@ -4,6 +4,7 @@
   import * as ButtonGroup from "$lib/components/ui/button-group/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import { goto } from "$app/navigation";
+    import SignupForm from "$lib/components/signup-form.svelte";
 
   //Function to go to sign in page defined in /src/routes/login
   function goToSignInPage() {
@@ -59,34 +60,6 @@ p {
   <Button href="/login?mode=signup">Sign up</Button>
   </div>
 
-<div class="page-container">
-<div class="info-row">
-  <div class="column">
-    <section class="info-section">
-      <h2> Purpose Built </h2>
-      <p> A competent and modern <br>
-        project management solution <br>
-        built for teams of all sized </p>
-    </section>
-  </div>
-  <div class="column">
-    <section class="info-section">
-      <h2> Minimalistic Design </h2>
-      <p> Designed in a minimalist style <br>
-        with user experience in mind <br>
-        for maximum productivity </p>
-    </section>
-  </div>
-  <div class="column">
-    <section class="info-section">
-      <h2> Simple Onboarding </h2>
-      <p> Simple design and a streamlined <br>
-        feature set that allows fast onboarding <br>
-        and utilisation in teams </p>
-    </section>
-  </div>
-</div>
-</div>
 
 <Row>
   <Col>
