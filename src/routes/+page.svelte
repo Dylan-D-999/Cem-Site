@@ -15,19 +15,34 @@
 </script>
 
 <svelte:head>
-    <title>C.E.M</title> 
+      <title>C.E.M</title> 
 </svelte:head>
 
 <style>
 
-h1{
-  font-size: 35px;
-  text-align: center;
-}
+  h1 {
+    font-size: 35px;
+    text-align: center;
+  }
+
+  .sub-heading {
+    font-size: 25px;
+  }
+
 h2 {
   font-size: 20px;
   text-align: center;
 }
+p {
+  
+}
+
+.button-container {
+  text-align: center;
+  align-items: center;
+}
+
+
 
 </style>
 
@@ -37,11 +52,13 @@ h2 {
     <h2>Project Management Solution</h2>
   </Col>
 </Row>
+    
 
-<ButtonGroup.Root>
+
+<div class="button-container"> 
   <Button onclick={goToSignInPage}>Login</Button>
   <Button href="/login?mode=signup">Sign up</Button>
-</ButtonGroup.Root>
+  </div>
 
 
 <Row>
@@ -49,3 +66,5 @@ h2 {
  
   </Col>
 </Row>
+
+
