@@ -14,47 +14,34 @@
 </script>
 
 <svelte:head>
-    <title>C.E.M</title> 
+      <title>C.E.M</title> 
 </svelte:head>
 
 <style>
 
-  h1{
+  h1 {
     font-size: 35px;
     text-align: center;
   }
-  h2 {
-    font-size: 20px;
-    text-align: center;
-  }
-  .info-section {
-    margin: 40px 0;
-    padding: 20px;
-    border-top: 1px solid #ddd;
+
+  .sub-heading {
+    font-size: 25px;
   }
 
-  .column {
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
+h2 {
+  font-size: 20px;
+  text-align: center;
+}
+p {
+  
+}
 
-  .page-container { 
-    min-height: 100vh; 
-    display: flex; 
-    flex-direction: column;
-    justify-content: flex-end; 
-    padding: 2rem; 
-  }
-  .info-row { 
-    display: flex; 
-    gap: 2rem; 
-    padding: 40px 0;
-    justify-content: center;
-  }
-  .info-section { 
-    text-align: center; 
-  }
+.button-container {
+  text-align: center;
+  align-items: center;
+}
+
+
 
 </style>
 
@@ -64,11 +51,13 @@
     <h2>Project Management Solution</h2>
   </Col>
 </Row>
+    
 
-<ButtonGroup.Root>
+
+<div class="button-container"> 
   <Button onclick={goToSignInPage}>Login</Button>
   <Button href="/login?mode=signup">Sign up</Button>
-</ButtonGroup.Root>
+  </div>
 
 <div class="page-container">
 <div class="info-row">
@@ -99,5 +88,10 @@
 </div>
 </div>
 
+<Row>
+  <Col>
+ 
+  </Col>
+</Row>
 
-  
+
