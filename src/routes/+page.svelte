@@ -41,6 +41,16 @@ p {
   align-items: center;
 }
 
+.columns-container {
+  display: flex;
+  gap: 3rem;
+  max-width: 1000px;
+  margin: auto;
+  position: fixed;
+  bottom: 10px;
+  left: 25%;
+}
+
 
 
 </style>
@@ -59,6 +69,7 @@ p {
   <Button href="/login?mode=signup">Sign up</Button>
   </div>
 
+<<<<<<< Updated upstream
 <div class="page-container">
 <div class="info-row">
   <div class="column">
@@ -87,11 +98,28 @@ p {
   </div>
 </div>
 </div>
+=======
+<div class = "columns-container">
+    
+  <p>
+        <b>ⓘ Purpose Built </b> <br>
+        A competent and modern <br>
+        project management <br>
+         system for teams <br> 
+         big and small </p>
+>>>>>>> Stashed changes
 
-<Row>
-  <Col>
- 
-  </Col>
-</Row>
+        <p> <b>ⓘ Sleek Design</b> <br>
+          Designed in a sleek modern <br>
+          fashion allowing you to get on with <br>
+          work without having too fight a <br>
+          chunky UI. </p>
+
+          <p> <b>ⓘ Simple Onboarding </b> <br> 
+            Simple design and a streamlined <br>
+          feature set allows fast onboarding <br>
+        and utilisation in your team. </p>
+  
+</div>
 
 
