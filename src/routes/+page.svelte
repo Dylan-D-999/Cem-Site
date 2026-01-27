@@ -69,36 +69,7 @@ p {
   <Button href="/login?mode=signup">Sign up</Button>
   </div>
 
-<<<<<<< Updated upstream
-<div class="page-container">
-<div class="info-row">
-  <div class="column">
-    <section class="info-section">
-      <h2> Purpose Built </h2>
-      <p> A competent and modern <br>
-        project management solution <br>
-        built for teams of all sized </p>
-    </section>
-  </div>
-  <div class="column">
-    <section class="info-section">
-      <h2> Minimalistic Design </h2>
-      <p> Designed in a minimalist style <br>
-        with user experience in mind <br>
-        for maximum productivity </p>
-    </section>
-  </div>
-  <div class="column">
-    <section class="info-section">
-      <h2> Simple Onboarding </h2>
-      <p> Simple design and a streamlined <br>
-        feature set that allows fast onboarding <br>
-        and utilisation in teams </p>
-    </section>
-  </div>
-</div>
-</div>
-=======
+
 <div class = "columns-container">
     
   <p>
@@ -107,7 +78,6 @@ p {
         project management <br>
          system for teams <br> 
          big and small </p>
->>>>>>> Stashed changes
 
         <p> <b>ⓘ Sleek Design</b> <br>
           Designed in a sleek modern <br>
