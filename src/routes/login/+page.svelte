@@ -5,6 +5,7 @@
   import { auth } from "$lib/firebase";
   import { goto } from "$app/navigation";
 
+
   async function loginWithGoogle() {
     //Google Login Logic
     console.log("Logging in with Google...");
