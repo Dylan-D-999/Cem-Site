@@ -3,10 +3,11 @@
     import { onAuthStateChanged, signOut, type User } from "firebase/auth";
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
+    import Chat from "$lib/components/Chat.svelte";
     import { Button } from "$lib/components/ui/button/index.js";
     import * as Card from "$lib/components/ui/card/index.js";
     import { Input } from "$lib/components/ui/input/index.js";
-    import { Label } from "$lib/components/ui/label/index.js";
+    import FileShare from "$lib/components/FileShare.svelte";
     import {
         createTeam,
         subscribeToUserTeams,
@@ -18,6 +19,13 @@
         type Team,
         type Invitation,
     } from "$lib/teams";
+    import {
+        addTask,
+        subscribeToTeamTasks,
+        toggleTaskCompletion,
+        deleteTask,
+        type Task,
+    } from "$lib/tasks";
 
     let user: User | null = $state(null);
     let loading = $state(true);
@@ -27,6 +35,7 @@
     let invitations: Invitation[] = $state([]); // Received invitations
     let sentInvitations: Invitation[] = $state([]); // Sent invitations for selected team
     let selectedTeam: Team | null = $state(null);
+    let tasks: Task[] = $state([]); // Team tasks
 
     // Form State
     let newTeamName = $state("");
@@ -34,10 +43,17 @@
     let isCreatingTeam = $state(false);
     let isInviting = $state(false);
 
+    // Task State
+    let newTaskContent = $state("");
+    let isAddingTask = $state(false);
+    let assignedMemberId = $state("");
+    let taskDeadline = $state("");
+
     onMount(() => {
         let unsubscribeTeams: () => void;
         let unsubscribeInvites: () => void;
         let unsubscribeSentInvites: () => void;
+        let unsubscribeTasks: () => void;
 
         const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             user = currentUser;
@@ -77,9 +93,11 @@
             }
         });
 
-        // Effect to subscribe to sent invitations when selectedTeam changes
+        // Effect to subscribe to sent invitations and tasks when selectedTeam changes
         $effect(() => {
             if (unsubscribeSentInvites) unsubscribeSentInvites();
+            if (unsubscribeTasks) unsubscribeTasks();
+
             if (selectedTeam) {
                 unsubscribeSentInvites = subscribeToTeamInvitations(
                     selectedTeam.id,
@@ -87,8 +105,15 @@
                         sentInvitations = invites;
                     },
                 );
+                unsubscribeTasks = subscribeToTeamTasks(
+                    selectedTeam.id,
+                    (updatedTasks) => {
+                        tasks = updatedTasks;
+                    },
+                );
             } else {
                 sentInvitations = [];
+                tasks = [];
             }
         });
 
@@ -158,8 +183,55 @@
             console.error("Error rejecting invite:", error);
         }
     }
+    // Handle adding tasks to the database
+    async function handleAddTask() {
+        if (!selectedTeam || !user || !newTaskContent.trim()) return;
+        isAddingTask = true;
+        try {
+            let assignedTo = null;
+            if (assignedMemberId) {
+                const member = selectedTeam.members.find(
+                    (m) => m.uid === assignedMemberId,
+                );
+                if (member) {
+                    assignedTo = { uid: member.uid, email: member.email };
+                }
+            }
+            await addTask(
+                selectedTeam.id,
+                newTaskContent,
+                user.uid,
+                assignedTo,
+                taskDeadline || null,
+            );
+            newTaskContent = "";
+            assignedMemberId = "";
+            taskDeadline = "";
+        } catch (error) {
+            console.error("Error adding task:", error);
+        } finally {
+            isAddingTask = false;
+        }
+    }
 
-    //Function for handling logout
+    async function handleToggleTask(task: Task) {
+        try {
+            await toggleTaskCompletion(task.id, task.isCompleted);
+        } catch (error) {
+            console.error("Error toggling task:", error);
+        }
+    }
+
+    //delete tasks from the database
+    async function handleDeleteTask(task: Task) {
+        if (!confirm("Are you sure you want to delete this task?")) return;
+        try {
+            await deleteTask(task.id);
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
+    }
+
     async function handleLogout() {
         //Wait for firebase signout function to complete
         try {
@@ -168,6 +240,16 @@
         } catch (error) {
             console.error("Logout error:", error);
         }
+    }
+
+    function formatDate(dateString: string) {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
     }
 </script>
 
@@ -335,6 +417,134 @@
                             </div>
                         </div>
 
+                        <div class="space-y-2 pt-4 border-t">
+                            <h3 class="font-semibold">Team Tasks</h3>
+                            <div class="flex gap-2 flex-wrap">
+                                <Input
+                                    bind:value={newTaskContent}
+                                    placeholder="Add a new task..."
+                                    class="flex-1 min-w-[200px]"
+                                    onkeydown={(e) =>
+                                        e.key === "Enter" && handleAddTask()}
+                                />
+                                <select
+                                    bind:value={assignedMemberId}
+                                    class="flex h-10 w-[150px] items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    <option value="">Assign to...</option>
+                                    {#each selectedTeam.members as member}
+                                        <option value={member.uid}
+                                            >{member.email}</option
+                                        >
+                                    {/each}
+                                </select>
+                                <Input
+                                    type="date"
+                                    bind:value={taskDeadline}
+                                    class="w-[150px]"
+                                />
+                                <Button
+                                    onclick={handleAddTask}
+                                    disabled={isAddingTask}
+                                >
+                                    {isAddingTask ? "Adding..." : "Add"}
+                                </Button>
+                            </div>
+
+                            <div class="space-y-2 mt-4">
+                                {#if tasks.length === 0}
+                                    <p class="text-sm text-muted-foreground">
+                                        No tasks yet.
+                                    </p>
+                                {:else}
+                                    {#each tasks as task}
+                                        <div
+                                            class="flex items-center justify-between p-3 border rounded-lg {task.isCompleted
+                                                ? 'bg-muted/50'
+                                                : ''}"
+                                        >
+                                            <div
+                                                class="flex items-center gap-3 flex-1"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={task.isCompleted}
+                                                    onchange={() =>
+                                                        handleToggleTask(task)}
+                                                    class="h-4 w-4"
+                                                />
+                                                <div class="flex flex-col">
+                                                    <span
+                                                        class={task.isCompleted
+                                                            ? "line-through text-muted-foreground"
+                                                            : ""}
+                                                    >
+                                                        {task.content}
+                                                    </span>
+                                                    <div
+                                                        class="flex gap-2 mt-1"
+                                                    >
+                                                        {#if task.assignedTo}
+                                                            <span
+                                                                class="text-xs bg-secondary px-2 py-0.5 rounded-full text-secondary-foreground"
+                                                            >
+                                                                {task.assignedTo
+                                                                    .email}
+                                                            </span>
+                                                        {/if}
+                                                        {#if task.deadline}
+                                                            <span
+                                                                class="text-xs text-muted-foreground border px-2 py-0.5 rounded-full"
+                                                            >
+                                                                Due: {formatDate(
+                                                                    task.deadline,
+                                                                )}
+                                                            </span>
+                                                        {/if}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                class="h-8 w-8 text-destructive"
+                                                onclick={() =>
+                                                    handleDeleteTask(task)}
+                                            >
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="16"
+                                                    height="16"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    class="lucide lucide-trash-2"
+                                                    ><path d="M3 6h18" /><path
+                                                        d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"
+                                                    /><path
+                                                        d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
+                                                    /><line
+                                                        x1="10"
+                                                        x2="10"
+                                                        y1="11"
+                                                        y2="17"
+                                                    /><line
+                                                        x1="14"
+                                                        x2="14"
+                                                        y1="11"
+                                                        y2="17"
+                                                    /></svg
+                                                >
+                                            </Button>
+                                        </div>
+                                    {/each}
+                                {/if}
+                            </div>
+                        </div>
+
                         {#if sentInvitations.length > 0}
                             <div class="space-y-2 pt-4 border-t">
                                 <h3 class="font-semibold">
@@ -358,6 +568,15 @@
                                         </div>
                                     {/each}
                                 </div>
+                            </div>
+                        {/if}
+
+                        {#if user}
+                            <div class="pt-4 border-t">
+                                <FileShare team={selectedTeam} {user} />
+                            </div>
+                            <div class="pt-4 border-t">
+                                <Chat teamId={selectedTeam.id} {user} />
                             </div>
                         {/if}
                     </Card.Content>
