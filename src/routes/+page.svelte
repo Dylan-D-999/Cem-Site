@@ -15,8 +15,12 @@
 
 <Row>
   <Col>
-    <h1 align="center">C.E.M</h1>
-    <h2 align="center">Project Management Solution</h2>
+    <div class="text-center text-4xl">
+    <h1> <b>  C.E.M</b> </h1>
+  </div>
+  <div class = "text-center text-xl">
+    <h3>Project Managment Solution</h3>
+  </div>
   </Col>
 </Row>
 
@@ -31,10 +35,28 @@
 <img src="/collaborating.png" alt="Collaborating Image" class="w-75" h="auto" />
 <img src="/project.png" alt="Team members collaborating..." class="w-75" h="auto" />
 </div>
-<Row>
-  <Col>
- 
-  </Col>
-</Row>
+
+<div class="flex gap-12 max-w-3xl mx-auto fixed bottom-2.5 left-1/4">
+    
+  <p>
+        <b>ⓘ Purpose Built </b> <br>
+        A competent and modern <br>
+        project management <br>
+         system for teams <br> 
+         big and small </p>
+
+        <p> <b>ⓘ Sleek Design</b> <br>
+          Designed in a sleek modern <br>
+          fashion allowing you to get on with <br>
+          work without having too fight a <br>
+          chunky UI. </p>
+
+          <p> <b>ⓘ Simple Onboarding </b> <br> 
+            Simple design and a streamlined <br>
+          feature set allows fast onboarding <br>
+        and utilisation in your team. </p>
+  
+</div>
+
 
 
