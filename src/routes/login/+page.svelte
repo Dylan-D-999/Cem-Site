@@ -8,6 +8,7 @@
   import { page } from '$app/stores';
 
 
+
   async function loginWithGoogle() {
     //Google Login Logic
     console.log("Logging in with Google...");

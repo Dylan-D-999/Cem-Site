@@ -3,10 +3,11 @@
     import { onAuthStateChanged, signOut, type User } from "firebase/auth";
     import { onMount } from "svelte";
     import { goto } from "$app/navigation";
+    import Chat from "$lib/components/Chat.svelte";
     import { Button } from "$lib/components/ui/button/index.js";
     import * as Card from "$lib/components/ui/card/index.js";
     import { Input } from "$lib/components/ui/input/index.js";
-    import { Label } from "$lib/components/ui/label/index.js";
+    import FileShare from "$lib/components/FileShare.svelte";
     import {
         createTeam,
         subscribeToUserTeams,
@@ -567,6 +568,15 @@
                                         </div>
                                     {/each}
                                 </div>
+                            </div>
+                        {/if}
+
+                        {#if user}
+                            <div class="pt-4 border-t">
+                                <FileShare team={selectedTeam} {user} />
+                            </div>
+                            <div class="pt-4 border-t">
+                                <Chat teamId={selectedTeam.id} {user} />
                             </div>
                         {/if}
                     </Card.Content>
