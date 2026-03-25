@@ -8,6 +8,7 @@
     import * as Card from "$lib/components/ui/card/index.js";
     import { Input } from "$lib/components/ui/input/index.js";
     import FileShare from "$lib/components/FileShare.svelte";
+    import GanttChart from "$lib/components/GanttChart.svelte";
     import {
         createTeam,
         subscribeToUserTeams,
@@ -48,6 +49,8 @@
     let isAddingTask = $state(false);
     let assignedMemberId = $state("");
     let taskDeadline = $state("");
+    let taskStartDate = $state("");
+    let viewMode: "list" | "gantt" = $state("list");
 
     onMount(() => {
         let unsubscribeTeams: () => void;
@@ -203,10 +206,12 @@
                 user.uid,
                 assignedTo,
                 taskDeadline || null,
+                taskStartDate || null,
             );
             newTaskContent = "";
             assignedMemberId = "";
             taskDeadline = "";
+            taskStartDate = "";
         } catch (error) {
             console.error("Error adding task:", error);
         } finally {
@@ -254,10 +259,10 @@
 </script>
 
 <!-- HTML Markup area for defining page layout and structure -->
-<div class="bg-muted flex min-h-svh flex-col items-center p-6 md:p-10">
-    <div class="w-full max-w-4xl grid gap-6 md:grid-cols-2">
+<div class="bg-muted flex min-h-svh flex-col items-center p-4 md:p-8">
+    <div class="w-full max-w-[95vw] 2xl:max-w-[1800px] grid gap-8 lg:grid-cols-12 min-h-full">
         <!-- User Profile & Teams List -->
-        <div class="space-y-6">
+        <div class="space-y-8 lg:col-span-4 xl:col-span-3 h-fit sticky top-8">
             <Card.Root>
                 <Card.Header>
                     <Card.Title>Profile</Card.Title>
@@ -371,14 +376,14 @@
         </div>
 
         <!-- Team Details View -->
-        <div class="space-y-6">
+        <div class="space-y-8 lg:col-span-8 xl:col-span-9">
             {#if selectedTeam}
-                <Card.Root class="h-full">
-                    <Card.Header>
-                        <Card.Title>{selectedTeam.name}</Card.Title>
-                        <Card.Description>Team Dashboard</Card.Description>
+                <Card.Root class="h-full border-2 shadow-sm">
+                    <Card.Header class="pb-6 border-b bg-muted/20">
+                        <Card.Title class="text-3xl">{selectedTeam.name}</Card.Title>
+                        <Card.Description class="text-lg">Team Dashboard</Card.Description>
                     </Card.Header>
-                    <Card.Content class="space-y-6">
+                    <Card.Content class="space-y-10 pt-8">
                         <div>
                             <h3 class="font-semibold mb-2">Members</h3>
                             <div class="space-y-2">
@@ -423,7 +428,7 @@
                                 <Input
                                     bind:value={newTaskContent}
                                     placeholder="Add a new task..."
-                                    class="flex-1 min-w-[200px]"
+                                    class="flex-1 min-w-[250px] h-10 text-base"
                                     onkeydown={(e) =>
                                         e.key === "Enter" && handleAddTask()}
                                 />
@@ -438,11 +443,22 @@
                                         >
                                     {/each}
                                 </select>
-                                <Input
-                                    type="date"
-                                    bind:value={taskDeadline}
-                                    class="w-[150px]"
-                                />
+                                <div class="flex items-center gap-1">
+                                    <span class="text-xs text-muted-foreground hidden sm:inline">Start:</span>
+                                    <Input
+                                        type="date"
+                                        bind:value={taskStartDate}
+                                        class="w-[130px] h-10 px-2"
+                                    />
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-xs text-muted-foreground hidden sm:inline">End:</span>
+                                    <Input
+                                        type="date"
+                                        bind:value={taskDeadline}
+                                        class="w-[130px] h-10 px-2"
+                                    />
+                                </div>
                                 <Button
                                     onclick={handleAddTask}
                                     disabled={isAddingTask}
@@ -452,95 +468,126 @@
                             </div>
 
                             <div class="space-y-2 mt-4">
-                                {#if tasks.length === 0}
-                                    <p class="text-sm text-muted-foreground">
-                                        No tasks yet.
-                                    </p>
-                                {:else}
-                                    {#each tasks as task}
-                                        <div
-                                            class="flex items-center justify-between p-3 border rounded-lg {task.isCompleted
-                                                ? 'bg-muted/50'
-                                                : ''}"
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="text-sm font-medium">Tasks View</h4>
+                                    <div class="flex gap-1 border rounded-md p-1 bg-muted/20">
+                                        <button 
+                                            class="px-3 py-1 text-sm rounded-sm transition-colors {viewMode === 'list' ? 'bg-background shadow-sm' : 'text-muted-foreground hover:bg-muted/50'}"
+                                            onclick={() => viewMode = 'list'}
                                         >
+                                            List
+                                        </button>
+                                        <button 
+                                            class="px-3 py-1 text-sm rounded-sm transition-colors {viewMode === 'gantt' ? 'bg-background shadow-sm' : 'text-muted-foreground hover:bg-muted/50'}"
+                                            onclick={() => viewMode = 'gantt'}
+                                        >
+                                            Gantt
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {#if viewMode === 'gantt'}
+                                    <GanttChart {tasks} />
+                                {:else}
+                                    {#if tasks.length === 0}
+                                        <p class="text-sm text-muted-foreground">
+                                            No tasks yet.
+                                        </p>
+                                    {:else}
+                                        {#each tasks as task}
                                             <div
-                                                class="flex items-center gap-3 flex-1"
+                                                class="flex items-center justify-between p-3 border rounded-lg {task.isCompleted
+                                                    ? 'bg-muted/50'
+                                                    : ''}"
                                             >
-                                                <input
-                                                    type="checkbox"
-                                                    checked={task.isCompleted}
-                                                    onchange={() =>
-                                                        handleToggleTask(task)}
-                                                    class="h-4 w-4"
-                                                />
-                                                <div class="flex flex-col">
-                                                    <span
-                                                        class={task.isCompleted
-                                                            ? "line-through text-muted-foreground"
-                                                            : ""}
-                                                    >
-                                                        {task.content}
-                                                    </span>
-                                                    <div
-                                                        class="flex gap-2 mt-1"
-                                                    >
-                                                        {#if task.assignedTo}
-                                                            <span
-                                                                class="text-xs bg-secondary px-2 py-0.5 rounded-full text-secondary-foreground"
-                                                            >
-                                                                {task.assignedTo
-                                                                    .email}
-                                                            </span>
-                                                        {/if}
-                                                        {#if task.deadline}
-                                                            <span
-                                                                class="text-xs text-muted-foreground border px-2 py-0.5 rounded-full"
-                                                            >
-                                                                Due: {formatDate(
-                                                                    task.deadline,
-                                                                )}
-                                                            </span>
-                                                        {/if}
+                                                <div
+                                                    class="flex items-center gap-3 flex-1"
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={task.isCompleted}
+                                                        onchange={() =>
+                                                            handleToggleTask(task)}
+                                                        class="h-4 w-4"
+                                                    />
+                                                    <div class="flex flex-col">
+                                                        <span
+                                                            class={task.isCompleted
+                                                                ? "line-through text-muted-foreground"
+                                                                : ""}
+                                                        >
+                                                            {task.content}
+                                                        </span>
+                                                        <div
+                                                            class="flex gap-2 mt-1"
+                                                        >
+                                                            {#if task.assignedTo}
+                                                                <span
+                                                                    class="text-xs bg-secondary px-2 py-0.5 rounded-full text-secondary-foreground"
+                                                                >
+                                                                    {task.assignedTo
+                                                                        .email}
+                                                                </span>
+                                                            {/if}
+                                                            {#if task.startDate}
+                                                                <span
+                                                                    class="text-xs text-muted-foreground border px-2 py-0.5 rounded-full"
+                                                                >
+                                                                    Start: {formatDate(
+                                                                        task.startDate,
+                                                                    )}
+                                                                </span>
+                                                            {/if}
+                                                            {#if task.deadline}
+                                                                <span
+                                                                    class="text-xs text-muted-foreground border px-2 py-0.5 rounded-full"
+                                                                >
+                                                                    Due: {formatDate(
+                                                                        task.deadline,
+                                                                    )}
+                                                                </span>
+                                                            {/if}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                class="h-8 w-8 text-destructive"
-                                                onclick={() =>
-                                                    handleDeleteTask(task)}
-                                            >
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    class="lucide lucide-trash-2"
-                                                    ><path d="M3 6h18" /><path
-                                                        d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"
-                                                    /><path
-                                                        d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
-                                                    /><line
-                                                        x1="10"
-                                                        x2="10"
-                                                        y1="11"
-                                                        y2="17"
-                                                    /><line
-                                                        x1="14"
-                                                        x2="14"
-                                                        y1="11"
-                                                        y2="17"
-                                                    /></svg
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    class="h-8 w-8 text-destructive"
+                                                    onclick={() =>
+                                                        handleDeleteTask(task)}
                                                 >
-                                            </Button>
-                                        </div>
-                                    {/each}
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="16"
+                                                        height="16"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        stroke-width="2"
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        class="lucide lucide-trash-2"
+                                                        ><path d="M3 6h18" /><path
+                                                            d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"
+                                                        /><path
+                                                            d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"
+                                                        /><line
+                                                            x1="10"
+                                                            x2="10"
+                                                            y1="11"
+                                                            y2="17"
+                                                        /><line
+                                                            x1="14"
+                                                            x2="14"
+                                                            y1="11"
+                                                            y2="17"
+                                                        /></svg
+                                                    >
+                                                </Button>
+                                            </div>
+                                        {/each}
+                                    {/if}
                                 {/if}
                             </div>
                         </div>
