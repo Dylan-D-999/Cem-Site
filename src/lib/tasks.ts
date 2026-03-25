@@ -24,11 +24,12 @@ export interface Task {
         uid: string;
         email: string;
     } | null;
+    startDate?: string | null;
     deadline?: string | null;
     createdAt: Timestamp;
 }
 //func to add tasks
-export async function addTask(teamId: string, content: string, userId: string, assignedTo: { uid: string; email: string } | null = null, deadline: string | null = null) {
+export async function addTask(teamId: string, content: string, userId: string, assignedTo: { uid: string; email: string } | null = null, deadline: string | null = null, startDate: string | null = null) {
     const taskData = {
         teamId,
         content,
@@ -36,6 +37,7 @@ export async function addTask(teamId: string, content: string, userId: string, a
         createdBy: userId,
         assignedTo,
         deadline,
+        startDate,
         createdAt: serverTimestamp()
     };
 
@@ -60,6 +62,14 @@ export function subscribeToTeamTasks(teamId: string, callback: (tasks: Task[]) =
         callback(tasks);
     }, (error) => {
         console.error("Error subscribing to tasks:", error);
+    });
+}
+//func to update task dates
+export async function updateTaskDates(taskId: string, startDate: string | null, deadline: string | null) {
+    const taskRef = doc(db, "tasks", taskId);
+    await updateDoc(taskRef, {
+        startDate,
+        deadline
     });
 }
 //func to toggle task completion

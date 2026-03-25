@@ -32,8 +32,8 @@
 </div>
 
 <div class="flex flex row images gap-1 justify-center mt-6">
-<img src="/collaborating.png" alt="Collaborating Image" class="w-75" h="auto" />
-<img src="/project.png" alt="Team members collaborating..." class="w-75" h="auto" />
+<img src="/collaborating.png" alt="Collaborating Image" class="w-75 h-auto" />
+<img src="/project.png" alt="Team members collaborating..." class="w-75 h-auto" />
 </div>
 
 <div class="flex gap-12 max-w-3xl mx-auto fixed bottom-2.5 left-1/4">
