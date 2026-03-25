@@ -259,10 +259,10 @@
 </script>
 
 <!-- HTML Markup area for defining page layout and structure -->
-<div class="bg-muted flex min-h-svh flex-col items-center p-6 md:p-10">
-    <div class="w-full max-w-4xl grid gap-6 md:grid-cols-2">
+<div class="bg-muted flex min-h-svh flex-col items-center p-4 md:p-8">
+    <div class="w-full max-w-[95vw] 2xl:max-w-[1800px] grid gap-8 lg:grid-cols-12 min-h-full">
         <!-- User Profile & Teams List -->
-        <div class="space-y-6">
+        <div class="space-y-8 lg:col-span-4 xl:col-span-3 h-fit sticky top-8">
             <Card.Root>
                 <Card.Header>
                     <Card.Title>Profile</Card.Title>
@@ -376,14 +376,14 @@
         </div>
 
         <!-- Team Details View -->
-        <div class="space-y-6">
+        <div class="space-y-8 lg:col-span-8 xl:col-span-9">
             {#if selectedTeam}
-                <Card.Root class="h-full">
-                    <Card.Header>
-                        <Card.Title>{selectedTeam.name}</Card.Title>
-                        <Card.Description>Team Dashboard</Card.Description>
+                <Card.Root class="h-full border-2 shadow-sm">
+                    <Card.Header class="pb-6 border-b bg-muted/20">
+                        <Card.Title class="text-3xl">{selectedTeam.name}</Card.Title>
+                        <Card.Description class="text-lg">Team Dashboard</Card.Description>
                     </Card.Header>
-                    <Card.Content class="space-y-6">
+                    <Card.Content class="space-y-10 pt-8">
                         <div>
                             <h3 class="font-semibold mb-2">Members</h3>
                             <div class="space-y-2">
@@ -428,7 +428,7 @@
                                 <Input
                                     bind:value={newTaskContent}
                                     placeholder="Add a new task..."
-                                    class="flex-1 min-w-[200px]"
+                                    class="flex-1 min-w-[250px] h-10 text-base"
                                     onkeydown={(e) =>
                                         e.key === "Enter" && handleAddTask()}
                                 />
