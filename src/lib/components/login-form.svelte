@@ -107,7 +107,7 @@
           >
             Or continue with
           </Field.Separator>
-          <Field.Field class="grid grid-cols-3 gap-4">
+          <Field.Field class="grid grid-cols-1 gap-4">
             <Button variant="outline" type="button" onclick={onGoogleLogin}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
