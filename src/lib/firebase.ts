@@ -2,13 +2,22 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
+import {
+  PUBLIC_FIREBASE_API_KEY,
+  PUBLIC_FIREBASE_AUTH_DOMAIN,
+  PUBLIC_FIREBASE_PROJECT_ID,
+  PUBLIC_FIREBASE_STORAGE_BUCKET,
+  PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  PUBLIC_FIREBASE_APP_ID
+} from '$env/static/public';
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDYQsKf4EEEACHAZmBfOqjYfwhBKYaHE_0",
-  authDomain: "cem-site-sda2.firebaseapp.com",
-  projectId: "cem-site-sda2",
-  storageBucket: "cem-site-sda2.firebasestorage.app",
-  messagingSenderId: "919366559284",
-  appId: "1:919366559284:web:e9a06e37f81ba3bf760c61"
+  apiKey: PUBLIC_FIREBASE_API_KEY,
+  authDomain: PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: PUBLIC_FIREBASE_APP_ID
 };
 // Initialise Firebase
 const app = initializeApp(firebaseConfig);
